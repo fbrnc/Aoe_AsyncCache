@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout>
+
+    <adminhtml_cache_index>
+    	<reference name="content">
+    		<block type="aoeasynccache/adminhtml_asyncControl" name="aoeasynccache" template="aoeasynccache/aoeasynccache.phtml">
+            </block>
+    	</reference>
+    </adminhtml_cache_index>
+   
+</layout>

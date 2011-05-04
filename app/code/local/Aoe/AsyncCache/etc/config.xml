@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+
+	<modules>
+		<Aoe_AsyncCache>
+			<active>true</active>
+			<codePool>local</codePool>
+			<version>0.0.2</version>
+		</Aoe_AsyncCache>
+	</modules>
+	
+	<global>
+	
+		<models>
+			<aoeasynccache>
+				<class>Aoe_AsyncCache_Model</class>
+				<resourceModel>aoeasynccache_mysql4</resourceModel>
+			</aoeasynccache>
+			<aoeasynccache_mysql4>
+				<class>Aoe_AsyncCache_Model_Mysql4</class>
+				<entities>
+					<asynccache><table>asynccache</table></asynccache>
+				</entities>
+			</aoeasynccache_mysql4>
+		</models>
+		
+		<helpers>
+			<aoeasynccache>
+				<class>Aoe_AsyncCache_Helper</class>
+			</aoeasynccache>
+		</helpers>
+		
+		<blocks>
+			<aoeasynccache>
+				<class>Aoe_AsyncCache_Block</class>
+			</aoeasynccache>
+		</blocks>
+		
+		<resources>
+			<aoeasynccache_setup>
+				<setup><module>Aoe_AsyncCache</module></setup>
+				<connection><use>core_setup</use></connection>
+			</aoeasynccache_setup>
+		</resources>
+	
+	</global>
+	
+	<admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <Aoe_AsyncCache before="Mage_Adminhtml">Aoe_AsyncCache_Adminhtml</Aoe_AsyncCache>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+	</admin>
+	
+	<adminhtml>
+		<layout>
+			<updates>
+				<aoeasynccache>
+					<file>aoeasynccache/aoeasynccache.xml</file>
+				</aoeasynccache>
+			</updates>
+		</layout>
+	</adminhtml>
+	
+	<crontab>
+		<jobs>
+			<aoeasynccache>
+				<schedule><cron_expr>*/15 * * * *</cron_expr></schedule>
+				<run><model>aoeasynccache/cleaner::processQueue</model></run>
+			</aoeasynccache>
+		</jobs>
+	</crontab>
+	
+</config>
