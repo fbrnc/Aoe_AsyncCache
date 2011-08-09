@@ -27,118 +27,143 @@
 class Varien_Cache_Core extends Zend_Cache_Core
 {
 
-    /**
-     * Make and return a cache id
-     *
-     * Checks 'cache_id_prefix' and returns new id with prefix or simply the id if null
-     *
-     * @param  string $id Cache id
-     * @return string Cache id (with or without prefix)
-     */
-    protected function _id($id)
-    {
-        if ($id !== null) {
-            $id = preg_replace('/([^a-zA-Z0-9_]{1,1})/', '_', $id);
-            if (isset($this->_options['cache_id_prefix'])) {
-                $id = $this->_options['cache_id_prefix'] . $id;
-            }
-        }
-        return $id;
-    }
+	/**
+	 * Make and return a cache id
+	 *
+	 * Checks 'cache_id_prefix' and returns new id with prefix or simply the id if null
+	 *
+	 * @param  string $id Cache id
+	 * @return string Cache id (with or without prefix)
+	 */
+	protected function _id($id)
+	{
+		if ($id !== null) {
+			$id = preg_replace('/([^a-zA-Z0-9_]{1,1})/', '_', $id);
+			if (isset($this->_options['cache_id_prefix'])) {
+				$id = $this->_options['cache_id_prefix'] . $id;
+			}
+		}
+		return $id;
+	}
 
-    /**
-     * Prepare tags
-     *
-     * @param array $tags
-     * @return array
-     */
-    protected function _tags($tags)
-    {
-        foreach ($tags as $key=>$tag) {
-            $tags[$key] = $this->_id($tag);
-        }
-        return $tags;
-    }
+	/**
+	 * Prepare tags
+	 *
+	 * @param array $tags
+	 * @return array
+	 */
+	protected function _tags($tags)
+	{
+		foreach ($tags as $key=>$tag) {
+			$tags[$key] = $this->_id($tag);
+		}
+		return $tags;
+	}
 
-    /**
-     * Save some data in a cache
-     *
-     * @param  mixed $data           Data to put in cache (can be another type than string if automatic_serialization is on)
-     * @param  string $id             Cache id (if not set, the last cache id will be used)
-     * @param  array $tags           Cache tags
-     * @param  int $specificLifetime If != false, set a specific lifetime for this cache record (null => infinite lifetime)
-     * @param  int   $priority         integer between 0 (very low priority) and 10 (maximum priority) used by some particular backends
-     * @throws Zend_Cache_Exception
-     * @return boolean True if no problem
-     */
-    public function save($data, $id = null, $tags = array(), $specificLifetime = false, $priority = 8)
-    {
-        $tags = $this->_tags($tags);
-        return parent::save($data, $id, $tags, $specificLifetime, $priority);
-    }
+	/**
+	 * Save some data in a cache
+	 *
+	 * @param  mixed $data           Data to put in cache (can be another type than string if automatic_serialization is on)
+	 * @param  string $id             Cache id (if not set, the last cache id will be used)
+	 * @param  array $tags           Cache tags
+	 * @param  int $specificLifetime If != false, set a specific lifetime for this cache record (null => infinite lifetime)
+	 * @param  int   $priority         integer between 0 (very low priority) and 10 (maximum priority) used by some particular backends
+	 * @throws Zend_Cache_Exception
+	 * @return boolean True if no problem
+	 */
+	public function save($data, $id = null, $tags = array(), $specificLifetime = false, $priority = 8)
+	{
+		$tags = $this->_tags($tags);
+		return parent::save($data, $id, $tags, $specificLifetime, $priority);
+	}
 
-    /**
-     * Clean cache entries
-     *
-     * Available modes are :
-     * 'all' (default)  => remove all cache entries ($tags is not used)
-     * 'old'            => remove too old cache entries ($tags is not used)
-     * 'matchingTag'    => remove cache entries matching all given tags
-     *                     ($tags can be an array of strings or a single string)
-     * 'notMatchingTag' => remove cache entries not matching one of the given tags
-     *                     ($tags can be an array of strings or a single string)
-     * 'matchingAnyTag' => remove cache entries matching any given tags
-     *                     ($tags can be an array of strings or a single string)
-     *
-     * @param  string       $mode
-     * @param  array|string $tags
-     * @param  bool			if true the cache will be really deleted, otherwise it will be written to a queue
-     * @throws Zend_Cache_Exception
-     * @return boolean True if ok
-     */
-    public function clean($mode = 'all', $tags = array(), $doIt = false) {
-    	if (!$doIt) {
-	    	$asynccache = Mage::getModel('aoeasynccache/asynccache'); /* @var $asynccache Aoe_AsyncCache_Model_Asynccache */
-	    	if ($asynccache !== false) {
-		    	$asynccache->setTstamp(time());
-		    	$asynccache->setMode($mode);
-		    	$asynccache->setTags(is_array($tags) ? implode(',', $tags) : $tags);
-		    	$asynccache->setStatus('pending');
-		    	$asynccache->setTrace(Mage::app()->getHelper('aoeasynccache')->debugTrail());
-		    	$asynccache->save();
-		    	return true;
-	    	}
-    	}
-    	
-        $tags = $this->_tags($tags);
-        return parent::clean($mode, $tags);
-    }
+	/**
+	 * Clean cache entries
+	 *
+	 * Available modes are :
+	 * 'all' (default)  => remove all cache entries ($tags is not used)
+	 * 'old'            => remove too old cache entries ($tags is not used)
+	 * 'matchingTag'    => remove cache entries matching all given tags
+	 *                     ($tags can be an array of strings or a single string)
+	 * 'notMatchingTag' => remove cache entries not matching one of the given tags
+	 *                     ($tags can be an array of strings or a single string)
+	 * 'matchingAnyTag' => remove cache entries matching any given tags
+	 *                     ($tags can be an array of strings or a single string)
+	 *
+	 * @param  string       $mode
+	 * @param  array|string $tags
+	 * @param  bool			if true the cache will be really deleted, otherwise it will be written to a queue
+	 * @throws Zend_Cache_Exception
+	 * @return boolean True if ok
+	 */
+	public function clean($mode = 'all', $tags = array(), $doIt = false) {
 
-    /**
-     * Return an array of stored cache ids which match given tags
-     *
-     * In case of multiple tags, a logical AND is made between tags
-     *
-     * @param array $tags array of tags
-     * @return array array of matching cache ids (string)
-     */
-    public function getIdsMatchingTags($tags = array())
-    {
-        $tags = $this->_tags($tags);
-        return parent::getIdsMatchingTags($tags);
-    }
+		if (false && !$doIt) {
+			$asynccache = Mage::getModel('aoeasynccache/asynccache'); /* @var $asynccache Aoe_AsyncCache_Model_Asynccache */
+			if ($asynccache !== false) {
+				$asynccache->setTstamp(time());
+				$asynccache->setMode($mode);
+				$asynccache->setTags(is_array($tags) ? implode(',', $tags) : $tags);
+				$asynccache->setStatus('pending');
+				$asynccache->setTrace(Mage::app()->getHelper('aoeasynccache')->debugTrail());
+				$asynccache->save();
+				return true;
+			}
+		}
 
-    /**
-     * Return an array of stored cache ids which don't match given tags
-     *
-     * In case of multiple tags, a logical OR is made between tags
-     *
-     * @param array $tags array of tags
-     * @return array array of not matching cache ids (string)
-     */
-    public function getIdsNotMatchingTags($tags = array())
-    {
-        $tags = $this->_tags($tags);
-        return parent::getIdsNotMatchingTags($tags);
-    }
+		if ($mode == 'all' || in_array('MAGE', $tags)) {
+			$this->checkApc();
+		}
+
+		$tags = $this->_tags($tags);
+		return parent::clean($mode, $tags);
+	}
+
+	/**
+	 * Check if we're in a cli environment and have apc enabled.
+	 *
+	 * @return void
+	 */
+	protected function checkApc() {
+		if (php_sapi_name() == 'cli') {
+			$backend = (string) Mage::getConfig()->getNode('global/cache/backend');
+			$slowBackend = (string) Mage::getConfig()->getNode('global/cache/slow_backend');
+			if (strtolower($backend) == 'apc' || strtolower($slowBackend) == 'apc') {
+				// TODO: calling store 1 frontend. Is there a better way to do this?
+				$url = Mage::getModel('core/url')->setStore(1)->getUrl('aoeasynccache/apc/clearUserCache', array('key' => Mage::helper('core')->encrypt('secret')));
+				$content = file_get_contents($url);
+				if ($content != 'SUCCESS') {
+					Mage::log('[ASYNCCACHE] Error while cleaning apc cache from cli', Zend_Log::ERR);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Return an array of stored cache ids which match given tags
+	 *
+	 * In case of multiple tags, a logical AND is made between tags
+	 *
+	 * @param array $tags array of tags
+	 * @return array array of matching cache ids (string)
+	 */
+	public function getIdsMatchingTags($tags = array())
+	{
+		$tags = $this->_tags($tags);
+		return parent::getIdsMatchingTags($tags);
+	}
+
+	/**
+	 * Return an array of stored cache ids which don't match given tags
+	 *
+	 * In case of multiple tags, a logical OR is made between tags
+	 *
+	 * @param array $tags array of tags
+	 * @return array array of not matching cache ids (string)
+	 */
+	public function getIdsNotMatchingTags($tags = array())
+	{
+		$tags = $this->_tags($tags);
+		return parent::getIdsNotMatchingTags($tags);
+	}
 }

@@ -8,9 +8,21 @@
 			<version>0.0.2</version>
 		</Aoe_AsyncCache>
 	</modules>
-	
+
+	<frontend>
+		<routers>
+			<Aoe_AsyncCache><!-- wird verwendet für das Modul im Layout XML Handle -->
+				<use>standard</use><!-- "standard" für frontend controller, "admin" für admin controller -->
+				<args>
+					<module>Aoe_AsyncCache</module>
+					<frontName>aoeasynccache</frontName>
+				</args>
+			</Aoe_AsyncCache>
+		</routers>
+	</frontend>
+
 	<global>
-	
+
 		<models>
 			<aoeasynccache>
 				<class>Aoe_AsyncCache_Model</class>
@@ -23,40 +35,40 @@
 				</entities>
 			</aoeasynccache_mysql4>
 		</models>
-		
+
 		<helpers>
 			<aoeasynccache>
 				<class>Aoe_AsyncCache_Helper</class>
 			</aoeasynccache>
 		</helpers>
-		
+
 		<blocks>
 			<aoeasynccache>
 				<class>Aoe_AsyncCache_Block</class>
 			</aoeasynccache>
 		</blocks>
-		
+
 		<resources>
 			<aoeasynccache_setup>
 				<setup><module>Aoe_AsyncCache</module></setup>
 				<connection><use>core_setup</use></connection>
 			</aoeasynccache_setup>
 		</resources>
-	
+
 	</global>
-	
+
 	<admin>
-        <routers>
-            <adminhtml>
-                <args>
-                    <modules>
-                        <Aoe_AsyncCache before="Mage_Adminhtml">Aoe_AsyncCache_Adminhtml</Aoe_AsyncCache>
-                    </modules>
-                </args>
-            </adminhtml>
-        </routers>
+		<routers>
+			<adminhtml>
+				<args>
+					<modules>
+						<Aoe_AsyncCache before="Mage_Adminhtml">Aoe_AsyncCache_Adminhtml</Aoe_AsyncCache>
+					</modules>
+				</args>
+			</adminhtml>
+		</routers>
 	</admin>
-	
+
 	<adminhtml>
 		<layout>
 			<updates>
@@ -66,7 +78,7 @@
 			</updates>
 		</layout>
 	</adminhtml>
-	
+
 	<crontab>
 		<jobs>
 			<aoeasynccache>
@@ -75,5 +87,5 @@
 			</aoeasynccache>
 		</jobs>
 	</crontab>
-	
+
 </config>

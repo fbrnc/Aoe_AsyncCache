@@ -1,15 +1,18 @@
-<?php $_asyncCollection = $this->getAsyncCollection() ?>
+<?php
+/* @var $this Aoe_AsyncCache_Block_Adminhtml_AsyncControl */
+$_asyncCollection = $this->getAsyncCollection()
+?>
 
 <br/>
 <div class="content-header">
-    <table cellspacing="0">
-        <tr>
-            <td><h3><?php echo Mage::helper('adminhtml')->__('Asynchronous Cache Management') ?></h3></td>
-            <?php if (count($_asyncCollection) > 0): ?>
-            	<td class="form-buttons"><button onclick="setLocation('<?php echo $this->getUrl('*/async/process')?>')" type="button" class="scalable delete"><span><?php echo Mage::helper('adminhtml')->__('Process asynchronous queue') ?></span></button></td>
-            <?php endif; ?>
-         </tr>
-    </table>
+	<table cellspacing="0">
+		<tr>
+			<td><h3><?php echo Mage::helper('adminhtml')->__('Asynchronous Cache Management') ?></h3></td>
+			<?php if (count($_asyncCollection) > 0): ?>
+				<td class="form-buttons"><button onclick="setLocation('<?php echo $this->getUrl('*/async/process')?>')" type="button" class="scalable delete"><span><?php echo Mage::helper('adminhtml')->__('Process asynchronous queue') ?></span></button></td>
+			<?php endif; ?>
+		</tr>
+	</table>
 </div>
 
 <?php if (count($_asyncCollection) > 0): ?>
@@ -18,34 +21,34 @@
 	<div class="grid">
 		<table class="data" cellspacing="0">
 			<thead>
-	        	<tr class="headings">
-	                <th class=" no-link"><span class="nobr">Mode</span></th>
-	                <th class=" no-link last"><span class="nobr">Tags</span></th>
+				<tr class="headings">
+					<th class=" no-link"><span class="nobr">Mode</span></th>
+					<th class=" no-link last"><span class="nobr">Tags</span></th>
 				</tr>
-	        </thead>
+			</thead>
 			<tbody>
 			<?php $i = 0;?>
 			<?php foreach ($_asyncCollection->extractJobs() as $job): ?>
 				<tr <?php echo ($i++ % 2) ? '' : 'class="even"'; ?>>
 					<td><?php echo $job['mode']; ?></td>
 					<td class="a-left last"><?php echo implode('<br />', $job['tags']); ?></td>
-				</tr>	
+				</tr>
 			<?php endforeach; ?>
 			</tbody>
 		</table>
 	</div>
-	
+
 	<h4><?php echo Mage::helper('adminhtml')->__('Single records') ?>:</h4>
 	<div class="grid">
 		<table class="data" cellspacing="0">
 			<thead>
-	        	<tr class="headings">
-	                <th class="no-link"><span class="nobr"><?php echo Mage::helper('adminhtml')->__('Time') ?></span></th>
-	                <th class="no-link"><span class="nobr"><?php echo Mage::helper('adminhtml')->__('Mode') ?></span></th>
-	                <th class="no-link"><span class="nobr"><?php echo Mage::helper('adminhtml')->__('Tags') ?></span></th>
-	                <th class="no-link last"><span class="nobr"><?php echo Mage::helper('adminhtml')->__('Action') ?></span></th>
+				<tr class="headings">
+					<th class="no-link"><span class="nobr"><?php echo Mage::helper('adminhtml')->__('Time') ?></span></th>
+					<th class="no-link"><span class="nobr"><?php echo Mage::helper('adminhtml')->__('Mode') ?></span></th>
+					<th class="no-link"><span class="nobr"><?php echo Mage::helper('adminhtml')->__('Tags') ?></span></th>
+					<th class="no-link last"><span class="nobr"><?php echo Mage::helper('adminhtml')->__('Action') ?></span></th>
 				</tr>
-	        </thead>
+			</thead>
 			<tbody>
 			<?php $i = 0;?>
 			<?php foreach ($_asyncCollection as $async): ?>
@@ -55,7 +58,7 @@
 					<td class="a-left"><?php echo $async->getTags(); ?></td>
 					<td class="a-left last"><a href="<?php echo $this->getUrl('*/async/delete', array('id' => $async->getId())); ?>"><?php echo Mage::helper('adminhtml')->__('Delete') ?></a></td>
 					<!--<td><?php echo $async->getTrace(); ?></td>-->
-				</tr>	
+				</tr>
 			<?php endforeach; ?>
 			</tbody>
 		</table>
@@ -64,3 +67,10 @@
 <?php else: ?>
 	<?php echo Mage::helper('adminhtml')->__('No pending queue entries available.') ?>
 <?php endif; ?>
+
+<div class="apc">
+	APC proxy functions (protected):
+	<a href="<?php echo $this->getUrl('aoeasynccache/apc/getApcUsedSize', array('key' => Mage::helper('core')->encrypt('secret'))); ?>">getApcUsedSize</a>
+	<a href="<?php echo $this->getUrl('aoeasynccache/apc/clearUserCache', array('key' => Mage::helper('core')->encrypt('secret'))); ?>">clearUserCache</a>
+	<a href="<?php echo $this->getUrl('aoeasynccache/apc/clearOpcodeCache', array('key' => Mage::helper('core')->encrypt('secret'))); ?>">clearOpcodeCache</a>
+</div>
