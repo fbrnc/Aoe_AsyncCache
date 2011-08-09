@@ -55,6 +55,18 @@
 			</aoeasynccache_setup>
 		</resources>
 
+		<events>
+			<aoe_tools_clearcache_cli>
+				<observers>
+					<aoeasynccache>
+						<type>singleton</type>
+						<class>aoeasynccache/cleaner</class>
+						<method>processQueue</method>
+					</aoeasynccache>
+				</observers>
+			</aoe_tools_clearcache_cli>
+		</events>
+
 	</global>
 
 	<admin>
