@@ -49,6 +49,7 @@ class Aoe_AsyncCache_ApcController extends Mage_Core_Controller_Front_Action {
 	 * @see http://code.google.com/p/munin-php-apc/
 	 */
 	public function muninAction() {
+		$this->checkKey();
 		if (function_exists("apc_cache_info") && function_exists("apc_sma_info")) {
 			$time = time();
 			$mem = apc_sma_info();
