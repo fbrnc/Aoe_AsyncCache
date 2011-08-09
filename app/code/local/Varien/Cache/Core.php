@@ -98,6 +98,10 @@ class Varien_Cache_Core extends Zend_Cache_Core
 	 */
 	public function clean($mode = 'all', $tags = array(), $doIt = false) {
 
+		if (Mage::registry('ignoreCacheCleaning')) {
+			return true;
+		}
+
 		if (!$doIt) {
 			$asynccache = Mage::getModel('aoeasynccache/asynccache'); /* @var $asynccache Aoe_AsyncCache_Model_Asynccache */
 			if ($asynccache !== false) {
