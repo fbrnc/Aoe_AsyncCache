@@ -67,10 +67,3 @@ $_asyncCollection = $this->getAsyncCollection()
 <?php else: ?>
 	<?php echo Mage::helper('adminhtml')->__('No pending queue entries available.') ?>
 <?php endif; ?>
-
-<div class="apc">
-	APC proxy functions (protected):
-	<a href="<?php echo $this->getUrl('aoeasynccache/apc/getApcUsedSize', array('key' => Mage::helper('core')->encrypt('secret'))); ?>">getApcUsedSize</a>
-	<a href="<?php echo $this->getUrl('aoeasynccache/apc/clearUserCache', array('key' => Mage::helper('core')->encrypt('secret'))); ?>">clearUserCache</a>
-	<a href="<?php echo $this->getUrl('aoeasynccache/apc/clearOpcodeCache', array('key' => Mage::helper('core')->encrypt('secret'))); ?>">clearOpcodeCache</a>
-</div>

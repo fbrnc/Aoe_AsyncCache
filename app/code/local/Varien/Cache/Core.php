@@ -115,32 +115,13 @@ class Varien_Cache_Core extends Zend_Cache_Core
 			}
 		}
 
-		if ($mode == 'all' || in_array('MAGE', $tags)) {
-			$this->checkApc();
+		if (in_array('MAGE', $tags)) {
+			// Cleaning all cache is way faster than cleaning by tag. "Mage" matches all cache entries in most cases.
+			$mode = 'all';
 		}
 
 		$tags = $this->_tags($tags);
 		return parent::clean($mode, $tags);
-	}
-
-	/**
-	 * Check if we're in a cli environment and have apc enabled.
-	 *
-	 * @return void
-	 */
-	protected function checkApc() {
-		if (php_sapi_name() == 'cli') {
-			$backend = (string) Mage::getConfig()->getNode('global/cache/backend');
-			$slowBackend = (string) Mage::getConfig()->getNode('global/cache/slow_backend');
-			if (strtolower($backend) == 'apc' || strtolower($slowBackend) == 'apc') {
-				// TODO: calling store 1 frontend. Is there a better way to do this?
-				$url = Mage::getModel('core/url')->setStore(1)->getUrl('aoeasynccache/apc/clearUserCache', array('key' => Mage::helper('core')->encrypt('secret')));
-				$content = file_get_contents($url);
-				if ($content != 'SUCCESS') {
-					Mage::log('[ASYNCCACHE] Error while cleaning apc cache from cli', Zend_Log::ERR);
-				}
-			}
-		}
 	}
 
 	/**
