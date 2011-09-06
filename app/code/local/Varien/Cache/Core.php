@@ -109,16 +109,20 @@ class Varien_Cache_Core extends Zend_Cache_Core
 				$asynccache->setMode($mode);
 				$asynccache->setTags(is_array($tags) ? implode(',', $tags) : $tags);
 				$asynccache->setStatus('pending');
-				$asynccache->setTrace(Mage::app()->getHelper('aoeasynccache')->debugTrail());
+				// $asynccache->setTrace(Mage::app()->getHelper('aoeasynccache')->debugTrail());
 				$asynccache->save();
 				return true;
 			}
 		}
 
 		if (in_array('MAGE', $tags)) {
-			// Cleaning all cache is way faster than cleaning by tag. "Mage" matches all cache entries in most cases.
+			// Cleaning all cache is way faster than cleaning by tag.
+			// And some backends (like apc) only don't support cleaning by tag.
+			// "MAGE" matches all cache entries in most cases anyways.
 			$mode = 'all';
 		}
+
+		Mage::dispatchEvent('clean_cache', array('mode' => $mode, 'tags' => $tags));
 
 		$tags = $this->_tags($tags);
 		return parent::clean($mode, $tags);
