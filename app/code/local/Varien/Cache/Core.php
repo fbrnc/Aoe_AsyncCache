@@ -28,6 +28,22 @@ class Varien_Cache_Core extends Zend_Cache_Core
 {
 
 	/**
+	 * @var int default cache priority
+	 */
+    protected $defaultPriority = 8;
+
+    /**
+     * Set default priority
+     *
+     * @param int $defaultPriority
+     * @return Varien_Cache_Core
+     */
+    public function setDefaultPriority($defaultPriority) {
+        $this->defaultPriority = $defaultPriority;
+        return $this;
+    }
+
+	/**
 	 * Make and return a cache id
 	 *
 	 * Checks 'cache_id_prefix' and returns new id with prefix or simply the id if null
@@ -71,8 +87,11 @@ class Varien_Cache_Core extends Zend_Cache_Core
 	 * @throws Zend_Cache_Exception
 	 * @return boolean True if no problem
 	 */
-	public function save($data, $id = null, $tags = array(), $specificLifetime = false, $priority = 8)
+	public function save($data, $id = null, $tags = array(), $specificLifetime = false, $priority = NULL)
 	{
+        if (is_null($priority)) {
+            $priority = $this->defaultPriority;
+        }
 		$tags = $this->_tags($tags);
 		return parent::save($data, $id, $tags, $specificLifetime, $priority);
 	}
