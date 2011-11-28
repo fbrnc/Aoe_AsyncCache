@@ -18,7 +18,11 @@ class Aoe_AsyncCache_Adminhtml_AsyncController extends Mage_Adminhtml_Controller
 		$processedJobs = Mage::getModel('aoeasynccache/cleaner')->processQueue();
 		if (is_array($processedJobs)) {
 			foreach ($processedJobs as $job) {
-				$this->_getSession()->addSuccess(Mage::helper('adminhtml')->__('Cleared cache with mode "%s" using tags "%s" (Duration: %s sec)', $job['mode'], implode(', ',$job['tags']), $job['duration']));
+				if (count($job['tags'])) {
+					$this->_getSession()->addSuccess(Mage::helper('adminhtml')->__('Cleared cache with mode "%s" using tags "%s" (Duration: %s sec)', $job['mode'], implode(', ',$job['tags']), $job['duration']));
+				} else {
+					$this->_getSession()->addSuccess(Mage::helper('adminhtml')->__('Cleared cache with mode "%s" (Duration: %s sec)', $job['mode'], $job['duration']));
+				}
 			}
 		}
 		$this->_redirect('*/cache/index');
