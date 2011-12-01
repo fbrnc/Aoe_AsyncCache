@@ -34,8 +34,12 @@ class Aoe_AsyncCache_Model_Cleaner extends Mage_Core_Model_Abstract {
 		// disabling asynccache (clear cache requests will be processed right away) for all following requests in this script call
 		Mage::register('disableasynccache', true, true);
 
-		// reinit configuration will trigger a clear config cache
-		Mage::app()->getConfig()->reinit();
+		try {
+			// reinit configuration will trigger a clear config cache
+			Mage::app()->getConfig()->reinit();
+		} catch(Exception $e) {
+			Mage::log('[ASYNCCACHE] Error while config reinit: ' . $e->getMessage());
+		}
 
 		return $jobs;
 	}
