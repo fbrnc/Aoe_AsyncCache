@@ -8,9 +8,16 @@ $_asyncCollection = $this->getAsyncCollection()
 	<table cellspacing="0">
 		<tr>
 			<td><h3><?php echo Mage::helper('adminhtml')->__('Asynchronous Cache Management') ?></h3></td>
-			<?php if (count($_asyncCollection) > 0): ?>
-				<td class="form-buttons"><button onclick="setLocation('<?php echo $this->getUrl('*/async/process')?>')" type="button" class="scalable delete"><span><?php echo Mage::helper('adminhtml')->__('Process asynchronous queue') ?></span></button></td>
-			<?php endif; ?>
+			<td class="form-buttons">
+				<button onclick="setLocation('<?php echo $this->getUrl('*/async/flushAllNow')?>')" type="button" class="scalable delete">
+					<span><?php echo Mage::helper('adminhtml')->__('Flush Cache Storage! Now!') ?></span>
+				</button>
+				<?php if (count($_asyncCollection) > 0): ?>
+					<button onclick="setLocation('<?php echo $this->getUrl('*/async/process')?>')" type="button" class="scalable delete">
+						<span><?php echo Mage::helper('adminhtml')->__('Process asynchronous queue') ?></span>
+					</button>
+				<?php endif; ?>
+			</td>
 		</tr>
 	</table>
 </div>
