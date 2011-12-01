@@ -94,10 +94,19 @@
 	<crontab>
 		<jobs>
 			<aoeasynccache>
-				<schedule><cron_expr>*/15 * * * *</cron_expr></schedule>
+				<schedule><config_path>system/aoeasynccache/scheduler_cron_expr</config_path></schedule>
 				<run><model>aoeasynccache/cleaner::processQueue</model></run>
 			</aoeasynccache>
 		</jobs>
 	</crontab>
+
+    <default>
+		<system>
+			<aoeasynccache>
+				<enabletrace>0</enabletrace>
+				<scheduler_cron_expr>*/15 * * * *</scheduler_cron_expr>
+			</aoeasynccache>
+		</system>
+	</default>
 
 </config>

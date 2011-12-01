@@ -5,7 +5,7 @@ class Aoe_AsyncCache_Block_Adminhtml_AsyncControl extends Mage_Adminhtml_Block_T
 	/**
 	 * Get collection of async objects
 	 *
-	 * @return
+	 * @return Aoe_AsyncCache_Model_Mysql4_Asynccache_Collection
 	 */
 	public function getAsyncCollection() {
 		$cleaner = Mage::getModel('aoeasynccache/cleaner'); /* @var $cleaner Aoe_AsyncCache_Model_Cleaner */

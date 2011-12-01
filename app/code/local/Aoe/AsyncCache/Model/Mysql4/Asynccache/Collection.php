@@ -18,6 +18,7 @@ class Aoe_AsyncCache_Model_Mysql4_Asynccache_Collection extends Mage_Core_Model_
     
     /**
      * Extract jobs
+	 * Combines job to reduce cache operations
      * 
      * @return array
      */

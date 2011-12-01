@@ -1,6 +1,6 @@
 <?php
 /* @var $this Aoe_AsyncCache_Block_Adminhtml_AsyncControl */
-$_asyncCollection = $this->getAsyncCollection()
+$_asyncCollection = $this->getAsyncCollection(); /* @var $_asyncCollection Aoe_AsyncCache_Model_Mysql4_Asynccache_Collection */
 ?>
 
 <br/>
@@ -53,18 +53,23 @@ $_asyncCollection = $this->getAsyncCollection()
 					<th class="no-link"><span class="nobr"><?php echo Mage::helper('adminhtml')->__('Time') ?></span></th>
 					<th class="no-link"><span class="nobr"><?php echo Mage::helper('adminhtml')->__('Mode') ?></span></th>
 					<th class="no-link"><span class="nobr"><?php echo Mage::helper('adminhtml')->__('Tags') ?></span></th>
+					<?php if (Mage::getStoreConfig('system/aoeasynccache/enabletrace') == 1): ?>
+						<th class="no-link"><span class="nobr"><?php echo Mage::helper('adminhtml')->__('Trace') ?></span></th>
+					<?php endif; ?>
 					<th class="no-link last"><span class="nobr"><?php echo Mage::helper('adminhtml')->__('Action') ?></span></th>
 				</tr>
 			</thead>
 			<tbody>
 			<?php $i = 0;?>
-			<?php foreach ($_asyncCollection as $async): ?>
+			<?php foreach ($_asyncCollection as $async): /* @var $async Aoe_AsyncCache_Model_Asynccache */ ?>
 				<tr <?php echo ($i++ % 2) ? '' : 'class="even"'; ?>>
 					<td><?php echo date('H:i:s', Mage::getModel('core/date')->timestamp($async->getTstamp())); ?></td>
 					<td><?php echo $async->getMode(); ?></td>
 					<td class="a-left"><?php echo $async->getTags(); ?></td>
+					<?php if (Mage::getStoreConfig('system/aoeasynccache/enabletrace') == 1): ?>
+						<td class="a-left"><pre><?php echo str_replace(' // ', "\n", $async->getTrace()); ?></pre></td>
+					<?php endif; ?>
 					<td class="a-left last"><a href="<?php echo $this->getUrl('*/async/delete', array('id' => $async->getId())); ?>"><?php echo Mage::helper('adminhtml')->__('Delete') ?></a></td>
-					<!--<td><?php echo $async->getTrace(); ?></td>-->
 				</tr>
 			<?php endforeach; ?>
 			</tbody>

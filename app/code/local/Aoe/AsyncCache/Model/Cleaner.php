@@ -24,12 +24,19 @@ class Aoe_AsyncCache_Model_Cleaner extends Mage_Core_Model_Abstract {
 				Mage::log('[ASYNCCACHE] MODE: ' . $job['mode'] . ', DURATION: ' . $job['duration'] . ' sec, TAGS: ' . implode(', ', $job['tags']));
 			}
 			$processingTime = time();
-			foreach ($collection as $asynccache) {
+			foreach ($collection as $asynccache) { /* @var $asynccache Aoe_AsyncCache_Model_Asynccache */
 				$asynccache->setProcessed($processingTime);
 				$asynccache->setStatus('success');
 				$asynccache->save();
 			}
 		}
+
+		// disabling asynccache (clear cache requests will be processed right away) for all following requests in this script call
+		Mage::register('disableasynccache', true, true);
+
+		// reinit configuration will trigger a clear config cache
+		Mage::app()->getConfig()->reinit();
+
 		return $jobs;
 	}
 

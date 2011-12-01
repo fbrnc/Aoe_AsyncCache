@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<sections>
+		<system>
+			<groups>
+				<aoeasynccache translate="label">
+					<label>AOE AsyncCache</label>
+					<frontend_type>text</frontend_type>
+					<sort_order>200</sort_order>
+					<show_in_default>1</show_in_default>
+					<show_in_website>0</show_in_website>
+					<show_in_store>0</show_in_store>
+					<fields>
+						<scheduler_cron_expr>
+							<label>Clear cache crontab</label>
+							<comment>Cron expressions. (E.g. "20 * * * *")</comment>
+							<frontend_type>text</frontend_type>
+							<sort_order>10</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>0</show_in_website>
+							<show_in_store>0</show_in_store>
+						</scheduler_cron_expr>
+						<enabletrace>
+							<label>Enable tracing</label>
+							<comment>This might slow down your website but will help you detect the places where deleting the cache is triggered. Don't use this in production environment.</comment>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+							<sort_order>20</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>0</show_in_website>
+							<show_in_store>0</show_in_store>
+						</enabletrace>
+					</fields>
+				</aoeasynccache>
+			</groups>
+		</system>
+	</sections>
+</config>

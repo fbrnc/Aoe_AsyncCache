@@ -121,14 +121,17 @@ class Varien_Cache_Core extends Zend_Cache_Core
 			return true;
 		}
 
-		if (!$doIt) {
+		if (!$doIt && !Mage::registry('disableasynccache')) {
 			$asynccache = Mage::getModel('aoeasynccache/asynccache'); /* @var $asynccache Aoe_AsyncCache_Model_Asynccache */
 			if ($asynccache !== false) {
+				// Mage::log('Logging clear cache request');
 				$asynccache->setTstamp(time());
 				$asynccache->setMode($mode);
 				$asynccache->setTags(is_array($tags) ? implode(',', $tags) : $tags);
 				$asynccache->setStatus('pending');
-				// $asynccache->setTrace(Mage::app()->getHelper('aoeasynccache')->debugTrail());
+				if (Mage::getStoreConfig('system/aoeasynccache/enabletrace') == 1) {
+					$asynccache->setTrace(Mage::app()->getHelper('aoeasynccache')->debugTrail());
+				}
 				$asynccache->save();
 				return true;
 			}
