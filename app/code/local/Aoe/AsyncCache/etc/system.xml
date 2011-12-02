@@ -20,7 +20,7 @@
 							<show_in_website>0</show_in_website>
 							<show_in_store>0</show_in_store>
 						</scheduler_cron_expr>
-						<enabletrace>
+						<!-- <enabletrace>
 							<label>Enable tracing</label>
 							<comment>This might slow down your website but will help you detect the places where deleting the cache is triggered. Don't use this in production environment.</comment>
 							<frontend_type>select</frontend_type>
@@ -29,7 +29,7 @@
 							<show_in_default>1</show_in_default>
 							<show_in_website>0</show_in_website>
 							<show_in_store>0</show_in_store>
-						</enabletrace>
+						</enabletrace> -->
 					</fields>
 				</aoeasynccache>
 			</groups>
