@@ -15,9 +15,13 @@ class Aoe_AsyncCache_Model_Cleaner extends Mage_Core_Model_Abstract {
 	public function processQueue() {
 		$jobs = null;
 		$collection = $this->getUnprocessedEntriesCollection();
+		$configCacheWasCleaned = false;
 		if (count($collection) > 0) {
 			$jobs = $collection->extractJobs();
 			foreach ($jobs as &$job) {
+				if (in_array(Mage_Core_Model_Config::CACHE_TAG, $job['tags']) || $job['mode'] == Zend_Cache::CLEANING_MODE_ALL) {
+					$configCacheWasCleaned = true;
+				}
 				$startTime = time();
 				Mage::app()->getCache()->clean($job['mode'], $job['tags'], true);
 				$job['duration'] = time() - $startTime;
@@ -34,11 +38,13 @@ class Aoe_AsyncCache_Model_Cleaner extends Mage_Core_Model_Abstract {
 		// disabling asynccache (clear cache requests will be processed right away) for all following requests in this script call
 		Mage::register('disableasynccache', true, true);
 
-		try {
-			// reinit configuration will trigger a clear config cache
-			Mage::app()->getConfig()->reinit();
-		} catch(Exception $e) {
-			Mage::log('[ASYNCCACHE] Error while config reinit: ' . $e->getMessage());
+		if ($configCacheWasCleaned) {
+			try {
+				// reinit configuration will trigger a clear config cache
+				Mage::app()->getConfig()->reinit();
+			} catch(Exception $e) {
+				Mage::log('[ASYNCCACHE] Error while config reinit: ' . $e->getMessage());
+			}
 		}
 
 		return $jobs;
