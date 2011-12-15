@@ -149,7 +149,11 @@ class Varien_Cache_Core extends Zend_Cache_Core
 		Mage::dispatchEvent('clean_cache', array('mode' => $mode, 'tags' => $tags));
 
 		$tags = $this->_tags($tags);
-		return parent::clean($mode, $tags);
+		$res = parent::clean($mode, $tags);
+		if (!$res) {
+			Mage::log('Cleaning the cache (mode: '.$mode.') did not return true', Zend_Log::ERR);
+		}
+		return $res;
 	}
 
 	/**
