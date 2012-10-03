@@ -134,8 +134,12 @@ class Varien_Cache_Core extends Zend_Cache_Core
 					$asynccache->setTrace(Mage::app()->getHelper('aoeasynccache')->debugTrail());
 				}
 				*/
-				$asynccache->save();
-				return true;
+				try {
+					$asynccache->save();
+					return true;
+				} catch (Exception $e) {
+					// Table might not be created yet. Just go on without returning...
+				}
 			}
 		}
 
