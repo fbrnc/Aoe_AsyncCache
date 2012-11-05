@@ -129,7 +129,7 @@ class Varien_Cache_Core extends Zend_Cache_Core
 				$asynccache->setMode($mode);
 				$asynccache->setTags(is_array($tags) ? implode(',', $tags) : $tags);
 				$asynccache->setStatus('pending');
-				if (Mage::getStoreConfig('system/aoeasynccache/enabletrace') == 1) {
+				if (true || Mage::getStoreConfig('system/aoeasynccache/enabletrace') == 1) {
 					$asynccache->setTrace(Mage::app()->getHelper('aoeasynccache')->debugTrail());
 				}
 				try {
