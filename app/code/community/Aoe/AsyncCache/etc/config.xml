@@ -4,7 +4,7 @@
 	<modules>
 		<Aoe_AsyncCache>
 			<active>true</active>
-			<codePool>local</codePool>
+			<codePool>community</codePool>
 			<version>0.0.3</version>
 		</Aoe_AsyncCache>
 	</modules>

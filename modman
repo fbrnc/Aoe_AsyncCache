@@ -1,5 +1,5 @@
-app/etc/modules/Aoe_AsyncCache.xml								app/etc/modules/Aoe_AsyncCache.xml
-app/code/local/Aoe/AsyncCache/									app/code/local/Aoe/AsyncCache/
-app/code/local/Varien/Cache/Core.php							app/code/local/Varien/Cache/Core.php
-app/design/adminhtml/default/default/layout/aoeasynccache/		app/design/adminhtml/default/default/layout/aoeasynccache/
-app/design/adminhtml/default/default/template/aoeasynccache/	app/design/adminhtml/default/default/template/aoeasynccache/
+app/etc/modules/Aoe_AsyncCache.xml                              app/etc/modules/Aoe_AsyncCache.xml
+app/code/community/Aoe/AsyncCache/                              app/code/community/Aoe/AsyncCache/
+app/code/community/Varien/Cache/Core.php                        app/code/community/Varien/Cache/Core.php
+app/design/adminhtml/default/default/layout/aoeasynccache/      app/design/adminhtml/default/default/layout/aoeasynccache/
+app/design/adminhtml/default/default/template/aoeasynccache/    app/design/adminhtml/default/default/template/aoeasynccache/
