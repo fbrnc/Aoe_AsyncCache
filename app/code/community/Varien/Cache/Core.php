@@ -137,6 +137,11 @@ class Varien_Cache_Core extends Zend_Cache_Core
 				try {
 					$asynccache->save();
 					return true;
+				} catch (Zend_Db_Statement_Exception $e) {
+					if ($e->getCode() == 23000) { // Integrity constraint violation: 1062 Duplicate entry '...' for key 'IDX_ASYNCCACHE_MODE_TAGS_STATUS'
+						// this record already exists => everything's ok :)
+						return true;
+					}
 				} catch (Exception $e) {
 					// Table might not be created yet. Just go on without returning...
 				}
