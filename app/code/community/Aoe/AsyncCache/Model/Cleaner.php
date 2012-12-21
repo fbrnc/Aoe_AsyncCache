@@ -13,19 +13,35 @@ class Aoe_AsyncCache_Model_Cleaner extends Mage_Core_Model_Abstract {
 	 * @return array|null
 	 */
 	public function processQueue() {
-		$jobs = null;
-		$collection = $this->getUnprocessedEntriesCollection();
+
+		$summary = array();
+
+		$collection = $this->getUnprocessedEntriesCollection(); /* @var $collection Aoe_AsyncCache_Model_Mysql4_Asynccache_Collection */
 		$configCacheWasCleaned = false;
 		if (count($collection) > 0) {
-			$jobs = $collection->extractJobs();
-			foreach ($jobs as &$job) {
-				if (in_array(Mage_Core_Model_Config::CACHE_TAG, $job['tags']) || $job['mode'] == Zend_Cache::CLEANING_MODE_ALL) {
+			
+			$jobCollection = $collection->extractJobs(); /* @var $jobCollection Aoe_AsyncCache_Model_JobCollection */
+
+			// give other modules (e.g. Aoe_VarnishAsyncCache) to process jobs instead
+			Mage::dispatchEvent('aoeasynccache_processqueue_preprocessjobcollection', array('jobCollection' => $jobCollection));
+
+			foreach ($jobCollection as $job) { /* @var $job Aoe_AsyncCache_Model_Job */
+				if ($job->affectsConfigCache()) {
 					$configCacheWasCleaned = true;
 				}
-				$startTime = time();
-				Mage::app()->getCache()->clean($job['mode'], $job['tags'], true);
-				$job['duration'] = time() - $startTime;
-				Mage::log('[ASYNCCACHE] MODE: ' . $job['mode'] . ', DURATION: ' . $job['duration'] . ' sec, TAGS: ' . implode(', ', $job['tags']));
+
+				if (!$job->getIsProcessed()) {
+					$startTime = time();
+					Mage::app()->getCache()->clean($job->getMode(), $job->getTags(), true);
+					$job->setDuration(time() - $startTime);
+					$job->setIsProcessed(true);
+
+					Mage::log(sprintf('[ASYNCCACHE] MODE: %s, DURATION: %s sec, TAGS: %s',
+						$job->getMode(),
+						$job->getDuration(),
+						implode(', ', $job->getTags())
+					));
+				}
 			}
 
 			// delete all affected asynccache database rows
@@ -33,6 +49,7 @@ class Aoe_AsyncCache_Model_Cleaner extends Mage_Core_Model_Abstract {
 				$asynccache->delete();
 			}
 
+			$summary = $jobCollection->getSummary();
 		}
 
 		// disabling asynccache (clear cache requests will be processed right away) for all following requests in this script call
@@ -50,7 +67,7 @@ class Aoe_AsyncCache_Model_Cleaner extends Mage_Core_Model_Abstract {
 		}
 		*/
 
-		return $jobs;
+		return $summary;
 	}
 
 	
@@ -63,7 +80,7 @@ class Aoe_AsyncCache_Model_Cleaner extends Mage_Core_Model_Abstract {
 	public function getUnprocessedEntriesCollection() {
 		$collection = Mage::getModel('aoeasynccache/asynccache')->getCollection(); /* @var $collection Aoe_AsyncCache_Model_Mysql4_Asynccache_Collection */
 		$collection->addFieldToFilter('tstamp', array('lteq' => time()));
-		$collection->addFieldToFilter('status', 'pending');
+		$collection->addFieldToFilter('status', Aoe_AsyncCache_Model_Asynccache::STATUS_PENDING);
 		return $collection;
 	}
 

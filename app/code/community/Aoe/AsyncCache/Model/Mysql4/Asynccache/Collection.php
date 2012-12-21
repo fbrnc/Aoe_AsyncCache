@@ -20,47 +20,54 @@ class Aoe_AsyncCache_Model_Mysql4_Asynccache_Collection extends Mage_Core_Model_
      * Extract jobs
 	 * Combines job to reduce cache operations
      * 
-     * @return array
+     * @return Aoe_AsyncCache_Model_JobCollection
      */
     public function extractJobs() {
-    	$jobs = array();
-    	$matchingAnyTag = array();
-		foreach ($this as $asynccache) {
+    	$jobCollection = Mage::getModel('aoeasynccache/jobCollection'); /* @var $jobCollection Aoe_AsyncCache_Model_JobCollection */
+
+		$matchingAnyTag = array();
+		foreach ($this as $asynccache) { /* @var $asynccache Aoe_AsyncCache_Model_Asynccache */
 			$mode = $asynccache->getMode();
 			$tags = $this->getTagArray($asynccache->getTags());
-			if ($mode == 'all') {
-				return array(array('mode' => 'all', 'tags' => array()));
-			} elseif ($mode == 'matchingAnyTag') {
+
+			$job = Mage::getModel('aoeasynccache/job'); /* @var $job Aoe_AsyncCache_Model_Job */
+			$job->setParameters($mode, $tags);
+
+			if ($mode == Zend_Cache::CLEANING_MODE_ALL) {
+
+				$jobCollection->addItem($job);
+				return $jobCollection; // no further processing needed as we're going to clean everything anyway
+
+			} elseif ($mode == Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG) {
+
+				// collect tags and add to job collection later
 				$matchingAnyTag = array_merge($matchingAnyTag, $tags);
-			} elseif (($mode == 'matchingTag') && (count($tags) <= 1)) {
+
+			} elseif (($mode == Zend_Cache::CLEANING_MODE_MATCHING_TAG) && (count($tags) <= 1)) {
+
+				// collect tags and add to job collection later
 				$matchingAnyTag = array_merge($matchingAnyTag, $tags);
+
 			} else {
-				$jobs = $this->addCustomJob($jobs, $mode, $tags);
+
+				// everything else will be added to the job collection
+				$jobCollection->addItem($job);
+
 			}
 		}
+
+		// processed collected tags
 		$matchingAnyTag = array_unique($matchingAnyTag);
 		if (count($matchingAnyTag) > 0) {
-			$jobs[] = array('mode' => 'matchingAnyTag', 'tags' => $matchingAnyTag);
+
+			$job = Mage::getModel('aoeasynccache/job'); /* @var $job Aoe_AsyncCache_Model_Job */
+			$job->setParameters(Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, $matchingAnyTag);
+
+			$jobCollection->addItem($job);
+
 		}
-		return $jobs;
-    }
-    
-    /**
-     * Add job is it doesn't exist
-     * 
-     * @param array $jobs
-     * @param string $mode
-     * @param array $tags
-     * @return array $jobs
-     */
-    protected function addCustomJob(array $jobs, $mode, $tags) {
-    	foreach ($jobs as $job) {
-    		if ($job['mode'] == $mode && $job['tags'] == $tags) {
-    			return $jobs;
-    		}
-    	}
-    	$jobs[] = array('mode' => $mode, 'tags' => $tags);
-    	return $jobs;
+
+		return $jobCollection;
     }
     
     /**
