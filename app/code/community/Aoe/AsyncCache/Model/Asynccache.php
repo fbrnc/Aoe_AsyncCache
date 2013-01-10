@@ -12,6 +12,7 @@
  * @method getMode()
  * @method setMode()
  * @method getTags()
+ *
  * @method setTags()
  * @method getTrace()
  * @method setTrace()

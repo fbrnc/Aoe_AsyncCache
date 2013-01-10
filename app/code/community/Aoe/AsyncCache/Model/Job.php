@@ -7,6 +7,8 @@
  * @method getDuration()
  * @method getIsProcessed()
  * @method setIsProcessed()
+ * @method setAsynccacheId()
+ * @method getAsynccacheId()
  */
 class Aoe_AsyncCache_Model_Job extends Varien_Object {
 

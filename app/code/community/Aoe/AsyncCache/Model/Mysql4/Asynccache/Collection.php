@@ -32,6 +32,7 @@ class Aoe_AsyncCache_Model_Mysql4_Asynccache_Collection extends Mage_Core_Model_
 
 			$job = Mage::getModel('aoeasynccache/job'); /* @var $job Aoe_AsyncCache_Model_Job */
 			$job->setParameters($mode, $tags);
+			$job->setAsynccacheId($asynccache->getId());
 
 			if ($mode == Zend_Cache::CLEANING_MODE_ALL) {
 
