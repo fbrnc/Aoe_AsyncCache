@@ -8,7 +8,7 @@ class Aoe_AsyncCache_Model_JobCollection extends Varien_Data_Collection {
 	 * @param Aoe_AsyncCache_Model_Job $job
 	 * @return Aoe_AsyncCache_Model_JobCollection
 	 */
-	public function addItem(Aoe_AsyncCache_Model_Job $job) {
+	public function addItem(Varien_Object $job) {
 		// check if job with same mode and tags already exists
 		foreach ($this->getItems() as $existingJob) { /* @var $existingJob Aoe_AsyncCache_Model_Job */
 			if ($existingJob->isEqualTo($job)) {
