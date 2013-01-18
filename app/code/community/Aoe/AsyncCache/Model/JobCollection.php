@@ -24,7 +24,7 @@ class Aoe_AsyncCache_Model_JobCollection extends Varien_Data_Collection {
 	 * @return array
 	 */
 	public function getSummary() {
-		return array();
+		return "";
 	}
 
 }
