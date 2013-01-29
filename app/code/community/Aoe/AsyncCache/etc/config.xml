@@ -107,6 +107,11 @@
 				<scheduler_cron_expr>*/15 * * * *</scheduler_cron_expr>
 			</aoeasynccache>
 		</system>
+		<dev>
+			<log>
+				<aoeAsyncCacheActive>1</aoeAsyncCacheActive>
+			</log>
+		</dev>
 	</default>
 
 </config>
