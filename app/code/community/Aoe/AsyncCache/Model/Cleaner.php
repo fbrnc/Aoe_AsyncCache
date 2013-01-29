@@ -25,7 +25,9 @@ class Aoe_AsyncCache_Model_Cleaner extends Mage_Core_Model_Abstract {
 				$startTime = time();
 				Mage::app()->getCache()->clean($job['mode'], $job['tags'], true);
 				$job['duration'] = time() - $startTime;
-				Mage::log('[ASYNCCACHE] MODE: ' . $job['mode'] . ', DURATION: ' . $job['duration'] . ' sec, TAGS: ' . implode(', ', $job['tags']));
+                if (Mage::getStoreConfigFlag('dev/log/aoeAsyncCacheActive')) {
+				    Mage::log('[ASYNCCACHE] MODE: ' . $job['mode'] . ', DURATION: ' . $job['duration'] . ' sec, TAGS: ' . implode(', ', $job['tags']));
+                }
 			}
 
 			// delete all affected asynccache database rows
