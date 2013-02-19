@@ -14,7 +14,7 @@ class Aoe_AsyncCache_Model_Cleaner extends Mage_Core_Model_Abstract {
 	 */
 	public function processQueue() {
 
-		$summary = array();
+        $summary = array();
 
 		$collection = $this->getUnprocessedEntriesCollection(); /* @var $collection Aoe_AsyncCache_Model_Mysql4_Asynccache_Collection */
 		$configCacheWasCleaned = false;
@@ -102,6 +102,13 @@ class Aoe_AsyncCache_Model_Cleaner extends Mage_Core_Model_Abstract {
 		$collection = Mage::getModel('aoeasynccache/asynccache')->getCollection(); /* @var $collection Aoe_AsyncCache_Model_Mysql4_Asynccache_Collection */
 		$collection->addFieldToFilter('tstamp', array('lteq' => time()));
 		$collection->addFieldToFilter('status', Aoe_AsyncCache_Model_Asynccache::STATUS_PENDING);
+
+        // if configured, set limit to query
+        $selectLimit = (int) Mage::getStoreConfig('system/aoeasynccache/select_limit');
+        if ($selectLimit && ($selectLimit != 0)) {
+            $collection->getSelect()->limit($selectLimit);
+        }
+
 		return $collection;
 	}
 
