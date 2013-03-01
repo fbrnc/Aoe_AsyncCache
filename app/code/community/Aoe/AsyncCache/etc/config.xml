@@ -105,6 +105,7 @@
 			<aoeasynccache>
 				<enabletrace>0</enabletrace>
 				<scheduler_cron_expr>*/15 * * * *</scheduler_cron_expr>
+                <select_limit>0</select_limit>
 			</aoeasynccache>
 		</system>
 	</default>
