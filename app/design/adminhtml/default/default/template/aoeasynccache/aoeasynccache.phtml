@@ -65,7 +65,7 @@ $_asyncCollection = $this->getAsyncCollection(); /* @var $_asyncCollection Aoe_A
 				<tr <?php echo ($i++ % 2) ? '' : 'class="even"'; ?>>
 					<td><?php echo date('H:i:s', Mage::getModel('core/date')->timestamp($async->getTstamp())); ?></td>
 					<td><?php echo $async->getMode(); ?></td>
-					<td class="a-left"><?php echo $async->getTags(); ?></td>
+					<td class="a-left"><?php echo str_replace(',', ', ', $async->getTags()); ?></td>
 					<?php /* if (Mage::getStoreConfig('system/aoeasynccache/enabletrace') == 1): ?>
 						<td class="a-left"><pre><?php echo str_replace(' // ', "\n", $async->getTrace()); ?></pre></td>
 					<?php endif; */ ?>
