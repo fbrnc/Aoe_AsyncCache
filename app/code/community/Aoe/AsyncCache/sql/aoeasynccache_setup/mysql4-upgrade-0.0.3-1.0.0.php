@@ -5,16 +5,14 @@
 $installer = $this;
 
 $installer->startSetup();
+$table = $installer->getTable('aoeasynccache/asynccache');
+$connection = $installer->getConnection();
 
 // truncate table first
-$installer->getConnection()->truncateTable($installer->getTable('aoeasynccache/asynccache'));
+$connection->truncate($table);
 
 // add index
-$installer->getConnection()->addIndex(
-    $installer->getTable('aoeasynccache/asynccache'),
-    $installer->getIdxName('aoeasynccache/asynccache', array('mode', 'tags', 'status')),
-	array('mode', 'tags', 'status'),
-    Varien_Db_Adapter_Interface::INDEX_TYPE_UNIQUE
-);
+$query = 'CREATE UNIQUE INDEX IDX_ASYNCCACHE_MODE_TAGS_STATUS ON '. $table . ' (`mode`, `tags`, `status`)';
+$connection->raw_query($query);
 
 $installer->endSetup();
